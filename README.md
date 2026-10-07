@@ -4,7 +4,7 @@ OpsLedger es una torre de control operativa para convertir datos transaccionales
 
 ## Fase actual
 
-Fase 1A: esqueleto del proyecto y exploracion inicial del dataset Olist.
+Fase 1C: ETL de ingesta — carga de CSV Olist a PostgreSQL (staging → operativo).
 
 ## Stack base
 
@@ -25,6 +25,40 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e .
 .\.venv\Scripts\python.exe scripts\explorar_dataset.py
 ```
+
+## Migraciones
+
+```powershell
+# Aplicar todas las migraciones (crea esquemas + tablas)
+.\.venv\Scripts\alembic.exe upgrade head
+
+# Ver revisión actual
+.\.venv\Scripts\alembic.exe current
+```
+
+## Ingesta ETL (Fase 1C)
+
+Carga los archivos CSV de Olist en orden de claves foráneas:
+categorías → clientes → vendedores → productos → pedidos → ítems → pagos → reseñas.
+
+```powershell
+# Primera carga
+.\.venv\Scripts\python.exe -m src.modules.ingesta --dir data/raw
+
+# Segunda ejecución: informa "ya procesado" por cada archivo (idempotente)
+.\.venv\Scripts\python.exe -m src.modules.ingesta --dir data/raw
+```
+
+Los informes de calidad por archivo se guardan en `reports/calidad/` (no versionados).
+
+## Tests
+
+```powershell
+.\.venv\Scripts\pytest.exe tests/ -v
+```
+
+Los tests de ingesta y migraciones usan `TEST_DATABASE_URL` (base `opsledger_test`).
+Nunca tocan la base de desarrollo.
 
 ## Base de datos local
 

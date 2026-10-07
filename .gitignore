@@ -12,3 +12,6 @@ storage/
 htmlcov/
 
 *.zip
+
+# Informes de calidad generados por la ingesta (no versionar)
+reports/calidad/

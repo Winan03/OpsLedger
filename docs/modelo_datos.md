@@ -156,6 +156,18 @@ Toda violación de restricciones de integridad de base de datos (`NOT NULL`, `FK
 | **Estado no `delivered` con fecha de entrega** | 6 pedidos (0.01%) | **Blando** | Inconsistencia de estado. Se carga registrando la bandera. |
 | **Reseñas con título/mensaje nulo** | 87,656 títulos (88.34%) | **Esperable (Blando)** | Nulos opcionales por comportamiento del usuario (calificación solo por estrellas). Se cargan normalmente en `operativo.resenas_pedido`. |
 
+### Nombres Canónicos de Banderas de Calidad (`banderas_calidad` JSONB en `operativo.pedidos`)
+
+Los siguientes son los nombres de clave exactos usados en el campo `banderas_calidad`:
+
+| Bandera (clave JSON) | Descripción |
+|---|---|
+| `sin_fecha_entrega_cliente` | Pedido `delivered` sin `fecha_entrega_cliente`. |
+| `sin_fecha_aprobacion` | Pedido `delivered` sin `fecha_aprobacion`. |
+| `despacho_antes_de_aprobacion` | `fecha_entrega_transportista` < `fecha_aprobacion`. |
+| `entrega_cliente_antes_de_transportista` | `fecha_entrega_cliente` < `fecha_entrega_transportista`. |
+| `no_delivered_con_fecha_entrega` | Estado ≠ `delivered` pero tiene `fecha_entrega_cliente` registrada. |
+
 ---
 
 ## 6. Organización de Esquemas de Aplicación para Fase 2
