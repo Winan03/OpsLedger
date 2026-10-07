@@ -15,7 +15,7 @@ import psycopg
 
 def load_database_url_from_dotenv() -> None:
     env_path = Path(__file__).resolve().parents[1] / ".env"
-    if not env_path.exists() or os.getenv("DATABASE_URL"):
+    if not env_path.exists():
         return
 
     for line in env_path.read_text(encoding="utf-8").splitlines():
@@ -23,9 +23,9 @@ def load_database_url_from_dotenv() -> None:
         if not cleaned or cleaned.startswith("#") or "=" not in cleaned:
             continue
         key, value = cleaned.split("=", 1)
-        if key.strip() == "DATABASE_URL":
-            os.environ["DATABASE_URL"] = value.strip().strip('"').strip("'")
-            return
+        k = key.strip()
+        if k not in os.environ:
+            os.environ[k] = value.strip().strip('"').strip("'")
 
 
 def get_psycopg_url() -> str:
