@@ -1,0 +1,21 @@
+# Referencia de despliegue: en desarrollo local se usa PostgreSQL 16 nativo
+# en localhost:5432. Este compose no se usa en la maquina de desarrollo.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: opsledger-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
