@@ -19,7 +19,7 @@ Actuar como ingeniero de datos senior y mentor tecnico. El objetivo no es solo c
 
 ## Reglas de codigo
 
-- Usar Python 3.10 con type hints.
+- Usar Python 3.12 con type hints.
 - No escribir secretos en el codigo; usar variables de entorno.
 - Hashear contrasenas con argon2 o bcrypt.
 - Guardar tokens sensibles solo como hash.
@@ -31,6 +31,7 @@ Actuar como ingeniero de datos senior y mentor tecnico. El objetivo no es solo c
 ## Reglas de trabajo
 
 - Trabajar una fase a la vez.
+- La estructura modular es el objetivo final: los archivos y módulos se crean fase por fase a medida que se implementan, no por adelantado.
 - No avanzar de fase sin confirmacion del usuario.
 - No modificar ni mover archivos dentro de `data/raw`.
 - No modificar documentacion fuente dentro de `docs` salvo que el usuario lo pida.

@@ -40,4 +40,7 @@ Para comprobar la conexion:
 
 `docker-compose.yml` queda solo como referencia de despliegue. No se usa en desarrollo local.
 
-La API, el dashboard y el worker se agregaran en fases posteriores.
+## Estructura del proyecto
+
+La arquitectura modular en capas (`src/modules`, `src/worker`, `src/dashboard`) representa el objetivo final del proyecto. Los módulos y componentes se crean de forma incremental fase por fase a medida que se desarrolla el código correspondiente (en la Fase 1B/1C se habilita `src/modules/ingesta/`).
+

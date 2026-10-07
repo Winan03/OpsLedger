@@ -301,6 +301,8 @@ sequenceDiagram
 
 ### 8.7 Estructura de código (por módulos de dominio)
 
+> **Nota de desarrollo:** La estructura descrita a continuación representa la arquitectura objetivo final del sistema. Los módulos, routers, services y componentes (`worker`, `dashboard`) se crean e implementan de forma incremental fase por fase a medida que se desarrollan las funcionalidades correspondientes, evitando andamiaje vacío previo.
+
 ```
 OpsLedger/
 ├── docs/                      # documentación y registros de decisión
