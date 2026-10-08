@@ -347,9 +347,10 @@ OpsLedger/
 | Contenedores | Docker + Compose | Reproducibilidad |
 | Pruebas / CI | Pytest + GitHub Actions | Calidad |
 
-### 8.9 Capa analítica para Power BI
-- Esquema `analytics` con tablas de hechos y dimensiones (fecha, entidad, región, categoría). Funciona como **modelo de lectura** separado del modelo operativo de escritura (CQRS ligero).
-- Vistas de KPIs ya calculadas.
+### 8.9 Capa analítica para Power BI y Dashboard
+- Esquema `analytics` con vistas dimensionales y de hechos (`dim_fechas`, `dim_clientes`, `dim_vendedores`, `dim_productos`, `fct_pedidos`, `fct_items_pedido`). Funciona como **modelo de lectura** separado del modelo operativo de escritura (patrón CQRS ligero).
+- **Decisión de persistencia:** Dado el volumen del dataset (~100k pedidos, 112k ítems), la capa analítica se implementa como **vistas SQL estándar** sobre las tablas operativas indexadas. Estas vistas no duplican almacenamiento físico ni requieren procesos batch de sincronización; el optimizador de PostgreSQL empuja los filtros (predicados) y utiliza directamente los índices B-Tree y de clave foránea de las tablas base operativas.
+- Centralización de calidad: `fct_pedidos` incluye columnas booleanas de validez (`es_valido_ciclo_otd`, `es_valido_despacho`, `es_venta_bruta`, `es_ingreso_realizado`) para garantizar que todas las consultas de KPIs apliquen exactamente las mismas reglas de exclusión.
 - Rol de base de datos **de solo lectura** para Power BI.
 - Entregables: guía de conexión, archivo `.pbix` de ejemplo y capturas.
 - Alcance de aprendizaje acotado: modelo, relaciones y unas 10 medidas DAX.
@@ -366,7 +367,7 @@ OpsLedger/
 | ADR-04 | Worker separado de la API | Ejecutar tareas dentro de la API | La API responde rápido y las tareas largas no bloquean al usuario | Un contenedor más |
 | ADR-05 | Dashboard solo vía API | Streamlit con acceso directo a la BD | RBAC y reglas aplicadas en un único lugar | Una capa HTTP adicional |
 | ADR-06 | Puertos y adaptadores en almacenamiento y correo | Código atado a un proveedor | Permite cambiar de R2 a `bytea` o de Brevo a otro sin tocar los services | Interfaces adicionales |
-| ADR-07 | Esquema `analytics` separado | Consultar tablas operativas directamente | Modelo estable para dashboard y Power BI; facilita el rendimiento | Mantener vistas/tablas derivadas |
+| ADR-07 | Esquema `analytics` mediante vistas sobre tablas operativas | Tablas físicas analíticas duplicadas con ETL periódico; vistas materializadas | Para ~100k filas, las vistas estándar aprovechan directamente los índices B-Tree de las tablas base en < 75 ms, evitando desfase de datos o procesos de sincronización batch | Consultas analíticas complejas dependen de la optimización e índices en las tablas base operativas |
 | ADR-08 | Streamlit como cliente | Front SPA (React) | Rapidez de desarrollo; el valor está en datos y backend | Menor control de UX y de sesión; el front podría reemplazarse porque la API ya está desacoplada |
 | ADR-09 | JWT con expiración | Sesiones en servidor | API sin estado, apta para varios clientes | Revocación más compleja |
 | ADR-10 | Eventos internos como trabajos encadenados | Bus de eventos | Suficiente para el flujo de negocio actual | Sin suscriptores arbitrarios |
